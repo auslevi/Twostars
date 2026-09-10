@@ -3299,8 +3299,8 @@ body.no-scroll {
             </h2>
 
             <div class="song">
-                <div class="song-name">Your Guardian Angel</div>
-                <div class="song-artist">The Red Jumpsuit Apparatus</div>
+                <div class="song-name">Jazz</div>
+                <div class="song-artist">No one</div>
             </div>
 
             <div class="music-controls">
@@ -3318,7 +3318,7 @@ body.no-scroll {
                     <span></span>
                 </div>
 
-                <div class="music-status-text" id="musicStatusText">our song ♡</div>
+                <div class="music-status-text" id="musicStatusText">play music ♡</div>
 
             </div>
 
@@ -3716,7 +3716,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function stopRomanticMelody() {
         synthPlaying = false;
         if (synthTimer) clearTimeout(synthTimer);
-        if (musicStatusText) musicStatusText.textContent = "our song ♡";
+        if (musicStatusText) musicStatusText.textContent = "Play music ♡";
     }
 
     async function toggleMusic() {
