@@ -1,0 +1,6 @@
+{
+  "name": "Two Years — For Panagiotis",
+  "description": "An immersive, interactive 2nd anniversary celebration website for Panagiotis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
