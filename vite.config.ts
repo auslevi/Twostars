@@ -64,12 +64,63 @@ function aistudioMediaPlugin(): Plugin {
 }
 // LINT.ThenChange(//depot/google3/java/com/google/alkali/boq/makersuite/applet_dev_service/templates/initializers/react_theme/vite.config.ts:aistudio_media_plugin)
 
+function rootMediaPlugin(): Plugin {
+  return {
+    name: 'vite-plugin-root-media',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (req.url) {
+          const rawPath = req.url.split('?')[0].split('#')[0];
+          try {
+            const decodedPath = decodeURIComponent(rawPath);
+            const relativePath = decodedPath.replace(/^\//, '');
+            if (relativePath && !relativePath.includes('..')) {
+              const rootFilePath = path.resolve(__dirname, relativePath);
+              if (fs.existsSync(rootFilePath) && fs.statSync(rootFilePath).isFile()) {
+                const ext = path.extname(rootFilePath).toLowerCase();
+                const mimeMap: Record<string, string> = {
+                  '.mp3': 'audio/mpeg',
+                  '.wav': 'audio/wav',
+                  '.m4a': 'audio/mp4',
+                  '.ogg': 'audio/ogg',
+                  '.jpg': 'image/jpeg',
+                  '.jpeg': 'image/jpeg',
+                  '.png': 'image/png',
+                  '.webp': 'image/webp',
+                  '.gif': 'image/gif',
+                };
+                if (mimeMap[ext]) {
+                  res.setHeader('Content-Type', mimeMap[ext]);
+                  res.setHeader('Accept-Ranges', 'bytes');
+                  fs.createReadStream(rootFilePath).pipe(res);
+                  return;
+                }
+              }
+            }
+          } catch {
+            // Fall through
+          }
+        }
+        next();
+      });
+    },
+  };
+}
+
 export default defineConfig(() => {
   return {
-    plugins: [react(), tailwindcss(), aistudioMediaPlugin()],
+    plugins: [react(), tailwindcss(), aistudioMediaPlugin(), rootMediaPlugin()],
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
+      },
+    },
+    build: {
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'),
+          quiz: path.resolve(__dirname, 'quiz.html'),
+        },
       },
     },
     server: {
