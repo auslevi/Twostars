@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panagiotis's Official Quiz Score · Grace & Panagiotis</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fdfbf7;
+            --card-bg: #ffffff;
+            --rose: #b74f67;
+            --rose-dark: #8c364c;
+            --rose-light: #fdedf1;
+            --ink: #1f1b1c;
+            --ink-soft: #635b5e;
+            --border: #f0e6e8;
+            --green: #25855a;
+            --green-bg: #eafaf1;
+            --red: #c53030;
+            --red-bg: #fff5f5;
+            --serif: 'Cormorant Garamond', Georgia, serif;
+            --sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--ink);
+            font-family: var(--sans);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 30px 16px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .tagline {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--rose);
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: inline-block;
+            background: var(--rose-light);
+            padding: 5px 14px;
+            border-radius: 999px;
+        }
+
+        .title {
+            font-family: var(--serif);
+            font-size: clamp(28px, 6vw, 38px);
+            font-style: italic;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--ink-soft);
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 10px 35px rgba(183, 79, 103, 0.08);
+            padding: 32px 24px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--rose-light), var(--rose), var(--rose-dark));
+        }
+
+        /* WAITING STATE */
+        .waiting-state {
+            text-align: center;
+            padding: 40px 10px;
+        }
+
+        .pulse-loader {
+            width: 70px;
+            height: 70px;
+            background: var(--rose-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+            position: relative;
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(183, 79, 103, 0.4); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 16px rgba(183, 79, 103, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(183, 79, 103, 0); }
+        }
+
+        .waiting-title {
+            font-family: var(--serif);
+            font-size: 24px;
+            font-style: italic;
+            color: var(--ink);
+            margin-bottom: 10px;
+        }
+
+        .waiting-desc {
+            font-size: 14px;
+            color: var(--ink-soft);
+            max-width: 440px;
+            margin: 0 auto 24px;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--green);
+            background: var(--green-bg);
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            display: inline-block;
+            animation: blink 1.2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* SCORE SUCCESS STATE */
+        .score-display-box {
+            text-align: center;
+            padding: 10px 0 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .verified-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f0fbf4;
+            color: #1a6d45;
+            border: 1px solid #b7e3cb;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 999px;
+            margin-bottom: 16px;
+        }
+
+        .score-hero {
+            font-family: var(--serif);
+            font-size: clamp(64px, 16vw, 84px);
+            font-weight: 700;
+            line-height: 1;
+            color: var(--rose);
+            margin-bottom: 8px;
+        }
+
+        .score-hero span {
+            font-size: 32px;
+            color: var(--ink-soft);
+            font-weight: 400;
+        }
+
+        .score-grade {
+            font-family: var(--serif);
+            font-size: 24px;
+            font-style: italic;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+
+        .score-meta {
+            font-size: 13px;
+            color: var(--ink-soft);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .score-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* BREAKDOWN LIST */
+        .breakdown-title {
+            font-family: var(--serif);
+            font-size: 20px;
+            font-style: italic;
+            color: var(--ink);
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .breakdown-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .question-item {
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            border: 1px solid transparent;
+        }
+
+        .question-item.correct {
+            background: var(--green-bg);
+            border-color: #cdecd8;
+        }
+
+        .question-item.incorrect {
+            background: var(--red-bg);
+            border-color: #fed7d7;
+        }
+
+        .q-icon {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+
+        .question-item.correct .q-icon { color: var(--green); }
+        .question-item.incorrect .q-icon { color: var(--red); }
+
+        .q-content {
+            flex: 1;
+        }
+
+        .q-text {
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 4px;
+        }
+
+        .q-answer-details {
+            font-size: 12px;
+            color: var(--ink-soft);
+        }
+
+        .q-picked {
+            font-weight: 500;
+        }
+
+        /* ACTIONS */
+        .actions-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 24px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--rose);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background: var(--rose-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            color: var(--ink);
+        }
+
+        .btn-secondary:hover {
+            background: #fff5f7;
+            border-color: var(--rose);
+            color: var(--rose);
+        }
+
+        /* TAMPER ALERT */
+        .tamper-alert {
+            display: none;
+            background: var(--red-bg);
+            border: 1px solid #feb2b2;
+            color: #9b2c2c;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--ink-soft);
+            margin-top: 24px;
+        }
+
+        .footer a {
+            color: var(--rose);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <span class="tagline">Official Verification Portal</span>
+        <h1 class="title">Panagiotis's Quiz Results ♡</h1>
+        <p class="subtitle">Real-time, untampered score tracker for our 2nd Anniversary Relationship Quiz.</p>
+    </div>
+
+    <div id="tamperAlert" class="tamper-alert">
+        ⚠️ <strong>Security Notice:</strong> An attempt to tamper or modify the score verification signature was detected. Only genuine scores recorded directly by the quiz engine are recognized.
+    </div>
+
+    <!-- MAIN CARD -->
+    <div class="card" id="mainCard">
+        <!-- 1. WAITING FOR PANAGIOTIS -->
+        <div id="waitingSection" class="waiting-state">
+            <div class="pulse-loader">💌</div>
+            <h2 class="waiting-title">Waiting for Panagiotis to Complete the Quiz...</h2>
+            <p class="waiting-desc">
+                Panagiotis has not submitted his 15-question anniversary quiz yet. This page is live-polling the server—as soon as he finishes, his untampered score will appear right here instantly!
+            </p>
+            <div class="live-badge">
+                <span class="live-dot"></span> Live Channel Active · Polling Server
+            </div>
+        </div>
+
+        <!-- 2. COMPLETED SCORE VIEW -->
+        <div id="scoreSection" style="display: none;">
+            <div class="score-display-box">
+                <div class="verified-pill">
+                    <span>🛡️</span> Official Untampered Score Verified
+                </div>
+                <div class="score-hero" id="heroScore">15<span>/15</span></div>
+                <div class="score-grade" id="heroGrade">True Soulmate Perfection ♡</div>
+                <div class="score-meta">
+                    <div class="score-meta-item">
+                        <span>👤</span> <strong id="takerName">Panagiotis</strong>
+                    </div>
+                    <div class="score-meta-item">
+                        <span>📅</span> <span id="takerTime">Just now</span>
+                    </div>
+                    <div class="score-meta-item">
+                        <span>🔒</span> <span>Anti-Cheat Sealed</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="breakdown-title">
+                <span>Question Breakdown</span>
+                <span id="breakdownStat" style="font-size: 13px; font-family: var(--sans); font-weight: 600; color: var(--rose);">15 / 15 correct</span>
+            </div>
+
+            <div class="breakdown-list" id="questionsBreakdownList">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <div class="actions-box">
+        <button type="button" class="btn btn-secondary" id="refreshBtn" onclick="checkScoreNow()">
+            <span>🔄</span> Refresh Status
+        </button>
+        <a href="index.html" class="btn btn-primary">
+            <span>♡</span> Back to Our Anniversary Archive
+        </a>
+    </div>
+
+    <div class="footer">
+        Grace &amp; Panagiotis · September 11, 2024 - Forever ♡ · <a href="quiz.html">Take / View Quiz</a>
+    </div>
+</div>
+
+<script>
+let pollingInterval = null;
+const SECRET_SALT = "grace_panagiotis_love_forever_2026";
+
+async function computeSignature(name, score, total, timestamp) {
+    const text = `${name}:${score}:${total}:${timestamp}:${SECRET_SALT}`;
+    const enc = new TextEncoder();
+    const data = enc.encode(text);
+    const hashBuf = await crypto.subtle.digest("SHA-256", data);
+    const hashArr = Array.from(new Uint8Array(hashBuf));
+    return hashArr.map(b => b.toString(16).padStart(2, "0")).join("").substring(0, 24);
+}
+
+// 1. Check if URL contains signed verification token: ?v=...
+async function checkUrlVerification() {
+    const params = new URLSearchParams(window.location.search);
+    const vToken = params.get("v") || params.get("verify");
+
+    if (vToken) {
+        try {
+            const decoded = JSON.parse(decodeURIComponent(escape(atob(vToken))));
+            const { name, score, total, timestamp, sig, answers } = decoded;
+
+            // Verify signature
+            const expectedSig = await computeSignature(name, score, total, timestamp);
+            if (sig === expectedSig) {
+                renderScoreData({
+                    hasScore: true,
+                    name,
+                    score,
+                    total,
+                    percentage: Math.round((score / total) * 100),
+                    submittedAtFormatted: new Date(timestamp).toLocaleString("en-US", { dateStyle: "full", timeStyle: "short" }),
+                    answers: answers || []
+                });
+                return true;
+            } else {
+                document.getElementById("tamperAlert").style.display = "block";
+                return false;
+            }
+        } catch (e) {
+            console.error("Verification decode failed", e);
+        }
+    }
+    return false;
+}
+
+// 2. Fetch live score from server API: /api/score
+async function checkScoreNow() {
+    const refreshBtn = document.getElementById("refreshBtn");
+    if (refreshBtn) refreshBtn.innerHTML = "<span>⏳</span> Checking...";
+
+    try {
+        const res = await fetch("/api/score");
+        if (res.ok) {
+            const data = await res.json();
+            if (data.hasScore) {
+                renderScoreData(data);
+                if (pollingInterval) clearInterval(pollingInterval);
+                return;
+            }
+        }
+    } catch (e) {
+        console.log("Server score check note:", e.message);
+    } finally {
+        if (refreshBtn) refreshBtn.innerHTML = "<span>🔄</span> Refresh Status";
+    }
+
+    // Also check localStorage as backup if tested on same device
+    try {
+        const localTaken = localStorage.getItem("panagiotis_quiz_taken");
+        const localScore = localStorage.getItem("panagiotis_quiz_score");
+        const localAnswers = localStorage.getItem("panagiotis_quiz_breakdown");
+
+        if (localTaken === "true" && localScore !== null) {
+            renderScoreData({
+                hasScore: true,
+                name: "Panagiotis",
+                score: parseInt(localScore, 10) || 0,
+                total: 15,
+                percentage: Math.round(((parseInt(localScore, 10) || 0) / 15) * 100),
+                submittedAtFormatted: "Recorded on this device ♡",
+                answers: localAnswers ? JSON.parse(localAnswers) : []
+            });
+            if (pollingInterval) clearInterval(pollingInterval);
+        }
+    } catch (e) {}
+}
+
+function renderScoreData(data) {
+    document.getElementById("waitingSection").style.display = "none";
+    document.getElementById("scoreSection").style.display = "block";
+
+    const score = data.score;
+    const total = data.total || 15;
+
+    document.getElementById("heroScore").innerHTML = `${score}<span>/${total}</span>`;
+    document.getElementById("takerName").textContent = data.name || "Panagiotis";
+    document.getElementById("takerTime").textContent = data.submittedAtFormatted || "Verified";
+    document.getElementById("breakdownStat").textContent = `${score} of ${total} correct (${Math.round((score/total)*100)}%)`;
+
+    const gradeEl = document.getElementById("heroGrade");
+    if (score === total) {
+        gradeEl.textContent = "100% True Soulmate Perfection! ♡";
+    } else if (score >= 12) {
+        gradeEl.textContent = "Almost Perfect! Knows Our Story Deeply ♡";
+    } else if (score >= 8) {
+        gradeEl.textContent = "So Much Love & Sweet Memories ♡";
+    } else {
+        gradeEl.textContent = "Full of Love Always ♡";
+    }
+
+    // Render questions breakdown
+    const listEl = document.getElementById("questionsBreakdownList");
+    listEl.innerHTML = "";
+
+    if (data.answers && data.answers.length > 0) {
+        data.answers.forEach((item, idx) => {
+            const div = document.createElement("div");
+            div.className = `question-item ${item.isCorrect ? 'correct' : 'incorrect'}`;
+            div.innerHTML = `
+                <div class="q-icon">${item.isCorrect ? '✓' : '✗'}</div>
+                <div class="q-content">
+                    <div class="q-text">Q${idx + 1}. ${item.question}</div>
+                    <div class="q-answer-details">
+                        Panagiotis selected: <strong class="q-picked">${item.selectedOption}</strong>
+                        ${!item.isCorrect ? ` · <em>(Correct was: ${item.correctOption})</em>` : ' ♡'}
+                    </div>
+                </div>
+            `;
+            listEl.appendChild(div);
+        });
+    } else {
+        listEl.innerHTML = `<div style="text-align: center; color: var(--ink-soft); font-size: 13px; padding: 10px;">Official score locked in server records: ${score}/${total} ♡</div>`;
+    }
+}
+
+// Initial load
+(async function init() {
+    const verifiedFromUrl = await checkUrlVerification();
+    if (!verifiedFromUrl) {
+        await checkScoreNow();
+        // Poll every 4 seconds
+        pollingInterval = setInterval(checkScoreNow, 4000);
+    }
+})();
+</script>
+
+</body>
+</html>

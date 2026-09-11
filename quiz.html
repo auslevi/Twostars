@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#181514">
+<title>Our Relationship Quiz — Grace × Panagiotis</title>
+<meta name="description" content="The official 2nd anniversary relationship quiz for Grace and Panagiotis.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #f8f4ef;
+    --paper: #ffffff;
+    --ink: #1e1b1a;
+    --ink-soft: #383330;
+    --muted: #7c746e;
+    --soft: #e3dbd3;
+    --border-light: rgba(30, 27, 26, 0.08);
+    --rose: #b74f67;
+    --rose-dark: #8c364b;
+    --rose-light: #f5e4e8;
+    --gold: #cba26b;
+    --dark: #151213;
+    --serif: "Playfair Display", Georgia, serif;
+    --sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --hand: "Caveat", cursive;
+    --shadow-md: 0 16px 40px rgba(27, 25, 24, 0.08);
+    --shadow-card: 0 20px 50px rgba(183, 79, 103, 0.12);
+    --radius-md: 18px;
+    --radius-lg: 28px;
+    --radius-full: 9999px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Background floating glow blobs */
+.bg-glow-1 {
+    position: fixed;
+    top: -100px;
+    right: -100px;
+    width: 480px;
+    height: 480px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(234, 209, 212, 0.6) 0%, transparent 70%);
+    filter: blur(50px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bg-glow-2 {
+    position: fixed;
+    bottom: -100px;
+    left: -100px;
+    width: 450px;
+    height: 450px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(244, 237, 226, 0.8) 0%, transparent 70%);
+    filter: blur(50px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.quiz-container {
+    width: min(680px, 100%);
+    background: var(--paper);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-card);
+    padding: clamp(32px, 6vw, 55px);
+    position: relative;
+    z-index: 2;
+    transition: all 0.4s ease;
+}
+
+.quiz-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.quiz-tagline {
+    font-size: 11px;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--rose);
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.quiz-title {
+    font-family: var(--serif);
+    font-size: clamp(32px, 5vw, 44px);
+    line-height: 1.1;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+}
+
+.quiz-title em {
+    color: var(--rose);
+    font-style: italic;
+}
+
+.quiz-subtitle {
+    font-family: var(--hand);
+    font-size: 22px;
+    color: var(--muted);
+    margin-top: 8px;
+}
+
+/* Progress indicator */
+.progress-bar-wrap {
+    width: 100%;
+    height: 6px;
+    background: var(--soft);
+    border-radius: var(--radius-full);
+    margin-bottom: 32px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--rose) 0%, var(--gold) 100%);
+    border-radius: var(--radius-full);
+    transition: width 0.4s ease;
+}
+
+/* SCREEN 1: NAME INPUT */
+.name-screen {
+    text-align: center;
+}
+
+.avatar-decor {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--rose-light);
+    color: var(--rose-dark);
+    display: grid;
+    place-items: center;
+    font-size: 34px;
+    margin: 0 auto 24px;
+    border: 2px dashed rgba(183, 79, 103, 0.4);
+    box-shadow: 0 8px 20px rgba(183, 79, 103, 0.15);
+}
+
+.name-prompt {
+    font-size: 16px;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    margin-bottom: 28px;
+}
+
+.name-input-wrap {
+    position: relative;
+    max-width: 400px;
+    margin: 0 auto 24px;
+}
+
+.name-input {
+    width: 100%;
+    padding: 16px 24px;
+    border: 1.5px solid var(--border-light);
+    border-radius: var(--radius-full);
+    font-size: 17px;
+    font-family: var(--sans);
+    outline: none;
+    text-align: center;
+    background: #fdfbf9;
+    color: var(--ink);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.name-input:focus {
+    border-color: var(--rose);
+    box-shadow: 0 0 0 4px var(--rose-light);
+}
+
+.name-error-msg {
+    color: #8c364b;
+    background: #fff2f4;
+    border: 1px solid #f5c6cb;
+    border-radius: var(--radius-md);
+    padding: 12px 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 14px auto 18px;
+    max-width: 440px;
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--ink);
+    color: white;
+    border: none;
+    padding: 16px 36px;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(27, 25, 24, 0.2);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-primary:hover {
+    background: var(--rose);
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 14px 30px rgba(183, 79, 103, 0.35);
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border-light);
+    color: var(--ink-soft);
+    padding: 14px 30px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-secondary:hover {
+    border-color: var(--rose);
+    color: var(--rose);
+    background: var(--rose-light);
+}
+
+/* SCREEN 2: QUESTION SCREEN */
+.question-screen {
+    display: none;
+}
+
+.question-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.question-text {
+    font-family: var(--serif);
+    font-size: clamp(22px, 3.5vw, 28px);
+    line-height: 1.35;
+    color: var(--ink);
+    margin-bottom: 28px;
+    font-weight: 500;
+}
+
+.options-list {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 26px;
+}
+
+.option-btn {
+    width: 100%;
+    padding: 18px 22px;
+    background: #faf8f5;
+    border: 1.5px solid var(--border-light);
+    border-radius: var(--radius-md);
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 16px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.option-btn:hover:not(:disabled) {
+    border-color: var(--rose);
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(183, 79, 103, 0.1);
+}
+
+.option-letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid var(--border-light);
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 14px;
+    color: var(--muted);
+    flex-shrink: 0;
+}
+
+.option-btn.correct {
+    background: #eaf6ee !important;
+    border-color: #2e8540 !important;
+    color: #1b5e20 !important;
+}
+
+.option-btn.correct .option-letter {
+    background: #2e8540;
+    color: white;
+    border-color: #2e8540;
+}
+
+.option-btn.wrong {
+    background: #fdebee !important;
+    border-color: #d32f2f !important;
+    color: #b71c1c !important;
+}
+
+.option-btn.wrong .option-letter {
+    background: #d32f2f;
+    color: white;
+    border-color: #d32f2f;
+}
+
+.feedback-banner {
+    padding: 16px 20px;
+    border-radius: var(--radius-md);
+    margin-bottom: 22px;
+    font-size: 15px;
+    line-height: 1.5;
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.feedback-banner.correct {
+    background: #eaf6ee;
+    color: #1b5e20;
+    border: 1px solid #c8e6c9;
+}
+
+.feedback-banner.wrong {
+    background: #fdebee;
+    color: #b71c1c;
+    border: 1px solid #ffcdd2;
+}
+
+/* SCREEN 3: RESULTS SCREEN */
+.results-screen {
+    display: none;
+    text-align: center;
+}
+
+.results-badge {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ca5b75, var(--rose-dark));
+    color: #fff;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 20px;
+    font-size: 40px;
+    box-shadow: 0 12px 30px rgba(183, 79, 103, 0.35);
+}
+
+.score-number {
+    font-family: var(--serif);
+    font-size: clamp(48px, 9vw, 68px);
+    line-height: 1;
+    color: var(--ink);
+    margin-bottom: 8px;
+}
+
+.score-number span {
+    color: var(--rose);
+}
+
+.score-title {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 16px;
+}
+
+.score-message {
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1.8;
+    max-width: 500px;
+    margin: 0 auto 32px;
+    font-family: var(--serif);
+}
+
+.results-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.footer-nav {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.footer-nav a {
+    color: var(--rose);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer-nav a:hover {
+    text-decoration: underline;
+}
+
+/* Floating heart particles */
+.float-heart {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    color: var(--rose);
+    font-family: var(--serif);
+    animation: floatHeart 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Share Score Section */
+.share-score-box {
+    background: #fffafb;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 20px;
+    margin: 28px 0 24px;
+    text-align: center;
+    box-shadow: 0 4px 18px rgba(183, 79, 103, 0.06);
+}
+
+.share-score-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-family: var(--sans);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--rose);
+    background: rgba(183, 79, 103, 0.08);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.share-score-title {
+    font-family: var(--serif);
+    font-size: 20px;
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 6px;
+}
+
+.share-score-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    font-family: var(--sans);
+}
+
+.share-buttons-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-share-main {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--rose);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(183, 79, 103, 0.25);
+    flex: 1 1 100%;
+    max-width: 320px;
+}
+
+.btn-share-main:hover {
+    background: var(--rose-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(183, 79, 103, 0.35);
+}
+
+.btn-share-sub {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: #fff;
+    border: 1px solid var(--border);
+    color: var(--ink);
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-share-sub:hover {
+    border-color: var(--rose);
+    color: var(--rose);
+    background: #fff5f7;
+    transform: translateY(-1px);
+}
+
+.btn-share-sub.btn-whatsapp:hover {
+    border-color: #25d366;
+    color: #128c7e;
+    background: #f0fbf4;
+}
+
+.copy-toast {
+    display: none;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #2b7a4b;
+    background: #eef9f2;
+    border: 1px solid #c3e6cb;
+    padding: 6px 12px;
+    border-radius: 8px;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes floatHeart {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.6) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--x), var(--y)) scale(1.6) rotate(var(--r));
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-glow-1"></div>
+<div class="bg-glow-2"></div>
+
+<div class="quiz-container" id="quizContainer">
+
+    <div class="quiz-header">
+        <div class="quiz-tagline">Grace × Panagiotis · 2 Years</div>
+        <h1 class="quiz-title">Our Relationship <em>Quiz.</em></h1>
+        <div class="quiz-subtitle">how well do you know our love story? ♡</div>
+    </div>
+
+    <div class="progress-bar-wrap" id="progressBarWrap" style="display: none;">
+        <div class="progress-bar-fill" id="progressBarFill"></div>
+    </div>
+
+    <!-- 1. NAME SCREEN (Must enter name first) -->
+    <div class="name-screen" id="nameScreen">
+        <div class="avatar-decor">💌</div>
+
+        <p class="name-prompt">
+            Welcome to our anniversary quiz! Before we begin testing your memory on our two years together, please enter your name:
+        </p>
+
+        <form id="nameForm" onsubmit="return false;">
+            <div class="name-input-wrap">
+                <input 
+                    type="text" 
+                    id="playerNameInput" 
+                    class="name-input" 
+                    placeholder="Enter your name (Panagiotis only ♡)" 
+                    maxlength="40" 
+                    autocomplete="name"
+                    required
+                >
+            </div>
+
+            <div id="nameError" class="name-error-msg"></div>
+
+            <button type="submit" class="btn-primary" id="startQuizBtn">
+                Start Our Quiz ♡
+            </button>
+        </form>
+
+        <div style="margin-top: 24px;">
+            <a href="index.html" class="btn-secondary">
+                ← Back to Anniversary Archive
+            </a>
+        </div>
+    </div>
+
+    <!-- 2. QUESTION SCREEN -->
+    <div class="question-screen" id="questionScreen">
+        <div class="question-meta">
+            <span id="questionCounter">Question 1 of 15</span>
+            <span id="playerGreeting">Playing as: Panagiotis</span>
+        </div>
+
+        <h2 class="question-text" id="questionText"></h2>
+
+        <div class="options-list" id="optionsList"></div>
+
+        <div class="feedback-banner" id="feedbackBanner"></div>
+
+        <div style="text-align: right; display: none;" id="nextBtnWrap">
+            <button class="btn-primary" id="nextQuestionBtn">
+                Next Question →
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. RESULTS SCREEN -->
+    <div class="results-screen" id="resultsScreen">
+        <div class="results-badge">✦</div>
+        <div class="score-number" id="finalScoreDisplay">15<span>/15</span></div>
+        <div class="score-title" id="finalScoreTitle">True Soulmates ♡</div>
+        <p class="score-message" id="finalScoreMessage"></p>
+
+        <!-- SHARE SCORE BOX -->
+        <div class="share-score-box">
+            <span class="share-score-badge">Official Tamper-Proof Result</span>
+            <div class="share-score-title">Share Verified Score with Grace ♡</div>
+            <p class="share-score-desc">Grace can also view your verified score directly on her private results portal!</p>
+
+            <div class="share-buttons-grid">
+                <button type="button" class="btn-share-main" id="nativeShareBtn">
+                    <span>📱</span> Share Verified Link with Grace
+                </button>
+                <a id="whatsappShareBtn" target="_blank" rel="noopener noreferrer" class="btn-share-sub btn-whatsapp">
+                    <span>💬</span> WhatsApp
+                </a>
+                <button type="button" class="btn-share-sub" id="copyScoreBtn">
+                    <span>📋</span> <span id="copyBtnText">Copy Verified Link</span>
+                </button>
+                <a href="score.html" class="btn-share-sub" target="_blank" rel="noopener noreferrer">
+                    <span>🛡️</span> Grace's Live Score Portal ↗
+                </a>
+            </div>
+            <div id="copySuccessMsg" class="copy-toast">
+                ✓ Copied verified link! Send it to Grace in chat ♡
+            </div>
+        </div>
+
+        <div class="results-actions">
+            <a href="index.html" class="btn-primary">
+                Back to Our Anniversary Archive ✦
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<div class="footer-nav">
+    Handcrafted with love by Grace for Panagiotis · <a href="index.html">View Our Archive</a>
+</div>
+
+<script>
+const questions = [
+    {
+        question: "Which of these is my absolute favorite song?",
+        options: [
+            "The Party and The After Party",
+            "The Morning",
+            "Die for you",
+            "Tumblr Girls"
+        ],
+        correctIndex: 3,
+        explanation: "Tumblr Girls! You know my music taste so well ♡"
+    },
+    {
+        question: "What is my all-time favorite food?",
+        options: [
+            "Lechon",
+            "Adobo",
+            "Spaghetti",
+            "Barbeque"
+        ],
+        correctIndex: 1,
+        explanation: "Adobo, of course! Nothing beats it ♡"
+    },
+    {
+        question: "What is my favorite sweet treat / dessert?",
+        options: [
+            "Ice Cream",
+            "Mango Float",
+            "Chocolate",
+            "Cheesecake"
+        ],
+        correctIndex: 2,
+        explanation: "Chocolate! You always know my sweet tooth ♡"
+    },
+    {
+        question: "What is my favorite drink?",
+        options: [
+            "Sprite",
+            "Mountain Dew",
+            "Coca Cola",
+            "Apple Juice"
+        ],
+        correctIndex: 2,
+        explanation: "Coca Cola! Always my go-to drink ♡"
+    },
+    {
+        question: "What is my favorite color?",
+        options: [
+            "Blue",
+            "Pink",
+            "Black",
+            "Red"
+        ],
+        correctIndex: 3,
+        explanation: "Red! The color of love and passion ♡"
+    },
+    {
+        question: "What is my favorite flower?",
+        options: [
+            "Rose",
+            "Tulips",
+            "Hydrangea",
+            "Lotus"
+        ],
+        correctIndex: 1,
+        explanation: "Tulips! My all-time favorite flower in the world ♡"
+    },
+    {
+        question: "What is my favorite anime / show to watch?",
+        options: [
+            "The Good Doctor",
+            "The Hunger Games",
+            "Demon Slayer",
+            "The Mentalist"
+        ],
+        correctIndex: 2,
+        explanation: "Demon Slayer! You know how much I love it ♡"
+    },
+    {
+        question: "Where is my dream destination to travel to with you?",
+        options: [
+            "Maldives",
+            "Monaco",
+            "Norway",
+            "Italy"
+        ],
+        correctIndex: 3,
+        explanation: "Italy! Imagine us traveling there together one day ♡"
+    },
+    {
+        question: "Where did we first meet each other back in August?",
+        options: [
+            "In a random Discord voice call",
+            "Playing Wolvesville at the same time",
+            "At a quiet coffee shop",
+            "Through an Instagram comment"
+        ],
+        correctIndex: 1,
+        explanation: "The universe wanted us to meet by playing Wolvesville at the same time—and my friends helped connect us! ♡"
+    },
+    {
+        question: "What is our official anniversary date?",
+        options: [
+            "September 11, 2024",
+            "August 14, 2024",
+            "October 11, 2024",
+            "December 25, 2024"
+        ],
+        correctIndex: 0,
+        explanation: "September 11, 2024—the official day two whole years of our love began! ♡"
+    },
+    {
+        question: "What do I do when I am upset or mad?",
+        options: [
+            "Go shopping",
+            "Silence",
+            "Ignore",
+            "Cry"
+        ],
+        correctIndex: 1,
+        explanation: "Silence... when I'm upset, I go quiet ♡"
+    },
+    {
+        question: "What was the unforgettable moment where our love story truly began?",
+        options: [
+            "When we traded music playlists",
+            "When we won our first Wolvesville game together",
+            "When you confessed to me",
+            "When we stayed up until 5 AM on call"
+        ],
+        correctIndex: 2,
+        explanation: "One thing I will never forget is when you confessed to me my baby, that's where our story begins! ♡"
+    },
+    {
+        question: "What is my primary love language?",
+        options: [
+            "Words of Affirmation",
+            "Quality Time",
+            "Physical Touch",
+            "Receiving Gifts"
+        ],
+        correctIndex: 1,
+        explanation: "Quality Time! Every second spent with you means the whole world to me ♡"
+    },
+    {
+        question: "What do I usually do when I have free time or need to unwind?",
+        options: [
+            "I sing",
+            "I dance",
+            "I watch a movie",
+            "I sleep"
+        ],
+        correctIndex: 3,
+        explanation: "I sleep! Sleeping is always my favorite escape hehe ♡"
+    },
+    {
+        question: "What is my biggest dream and ultimate goal for our future?",
+        options: [
+            "Being rich",
+            "Getting married",
+            "Have 10 babies",
+            "Be strangers"
+        ],
+        correctIndex: 1,
+        explanation: "Getting married to you! That is my sweetest dream for us ♡"
+    }
+];
+
+let playerName = "Panagiotis";
+let currentQuestionIndex = 0;
+let score = 0;
+
+const nameScreen = document.getElementById("nameScreen");
+const questionScreen = document.getElementById("questionScreen");
+const resultsScreen = document.getElementById("resultsScreen");
+const progressBarWrap = document.getElementById("progressBarWrap");
+const progressBarFill = document.getElementById("progressBarFill");
+
+const playerNameInput = document.getElementById("playerNameInput");
+const nameForm = document.getElementById("nameForm");
+const nameError = document.getElementById("nameError");
+const playerGreeting = document.getElementById("playerGreeting");
+
+const questionCounter = document.getElementById("questionCounter");
+const questionText = document.getElementById("questionText");
+const optionsList = document.getElementById("optionsList");
+const feedbackBanner = document.getElementById("feedbackBanner");
+const nextBtnWrap = document.getElementById("nextBtnWrap");
+const nextQuestionBtn = document.getElementById("nextQuestionBtn");
+
+const finalScoreDisplay = document.getElementById("finalScoreDisplay");
+const finalScoreTitle = document.getElementById("finalScoreTitle");
+const finalScoreMessage = document.getElementById("finalScoreMessage");
+
+// Clear error state on input
+if (playerNameInput) {
+    playerNameInput.addEventListener("input", () => {
+        if (nameError) nameError.style.display = "none";
+        playerNameInput.style.borderColor = "";
+    });
+}
+
+// START QUIZ - Strictly only Panagiotis
+nameForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const entered = playerNameInput.value.trim();
+    if (!entered) {
+        playerNameInput.focus();
+        return;
+    }
+
+    const normalized = entered.toLowerCase().replace(/[♡♥\s]/g, "");
+    if (normalized !== "panagiotis") {
+        if (nameError) {
+            nameError.textContent = "Oops! This anniversary quiz is made strictly for Panagiotis only! ♡ If that's you, please type Panagiotis.";
+            nameError.style.display = "block";
+        }
+        playerNameInput.style.borderColor = "#b74f67";
+        playerNameInput.focus();
+        return;
+    }
+
+    playerName = "Panagiotis";
+
+    nameScreen.style.display = "none";
+    progressBarWrap.style.display = "block";
+    questionScreen.style.display = "block";
+    playerGreeting.textContent = `Playing as: ${playerName} ♡`;
+
+    currentQuestionIndex = 0;
+    score = 0;
+    loadQuestion(currentQuestionIndex);
+
+    createHearts(window.innerWidth / 2, window.innerHeight / 2, 8);
+});
+
+function loadQuestion(index) {
+    const q = questions[index];
+    const letters = ["A", "B", "C", "D"];
+
+    questionCounter.textContent = `Question ${index + 1} of ${questions.length}`;
+    const progressPercent = ((index) / questions.length) * 100;
+    progressBarFill.style.width = `${progressPercent}%`;
+
+    questionText.textContent = q.question;
+    optionsList.innerHTML = "";
+    feedbackBanner.style.display = "none";
+    feedbackBanner.className = "feedback-banner";
+    nextBtnWrap.style.display = "none";
+
+    q.options.forEach((opt, optIndex) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.innerHTML = `
+            <span>
+                <span class="option-letter">${letters[optIndex]}</span>
+                ${opt}
+            </span>
+        `;
+        btn.addEventListener("click", () => handleSelectOption(optIndex, btn));
+        optionsList.appendChild(btn);
+    });
+}
+
+let userAnswers = [];
+const SECRET_SALT = "grace_panagiotis_love_forever_2026";
+
+async function computeSignature(name, score, total, timestamp) {
+    const text = `${name}:${score}:${total}:${timestamp}:${SECRET_SALT}`;
+    const enc = new TextEncoder();
+    const data = enc.encode(text);
+    const hashBuf = await crypto.subtle.digest("SHA-256", data);
+    const hashArr = Array.from(new Uint8Array(hashBuf));
+    return hashArr.map(b => b.toString(16).padStart(2, "0")).join("").substring(0, 24);
+}
+
+function handleSelectOption(selectedIndex, selectedBtn) {
+    const q = questions[currentQuestionIndex];
+    const buttons = optionsList.querySelectorAll(".option-btn");
+
+    // Disable all options once an answer is chosen
+    buttons.forEach(btn => btn.disabled = true);
+
+    const isCorrect = selectedIndex === q.correctIndex;
+    userAnswers.push({
+        question: q.question,
+        selectedOption: q.options[selectedIndex],
+        correctOption: q.options[q.correctIndex],
+        isCorrect: isCorrect
+    });
+
+    if (isCorrect) {
+        score++;
+        selectedBtn.classList.add("correct");
+        feedbackBanner.textContent = `✨ Correct! ${q.explanation}`;
+        feedbackBanner.className = "feedback-banner correct";
+        feedbackBanner.style.display = "block";
+
+        const rect = selectedBtn.getBoundingClientRect();
+        createHearts(rect.left + rect.width / 2, rect.top + rect.height / 2, 10);
+    } else {
+        selectedBtn.classList.add("wrong");
+        buttons[q.correctIndex].classList.add("correct");
+        feedbackBanner.textContent = `♡ Close one! The answer is: "${q.options[q.correctIndex]}". ${q.explanation}`;
+        feedbackBanner.className = "feedback-banner";
+        feedbackBanner.style.background = "#fff2f4";
+        feedbackBanner.style.color = "#8c364b";
+        feedbackBanner.style.border = "1px solid #f5c6cb";
+        feedbackBanner.style.display = "block";
+    }
+
+    nextBtnWrap.style.display = "block";
+}
+
+nextQuestionBtn.addEventListener("click", () => {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        loadQuestion(currentQuestionIndex);
+    } else {
+        showResults();
+    }
+});
+
+async function showResults() {
+    progressBarFill.style.width = "100%";
+    questionScreen.style.display = "none";
+    resultsScreen.style.display = "block";
+
+    // Seal the quiz in localStorage so it cannot be retaken
+    try {
+        localStorage.setItem("quiz_completed_panagiotis", "true");
+        localStorage.setItem("quiz_score_panagiotis", score);
+        localStorage.setItem("panagiotis_quiz_taken", "true");
+        localStorage.setItem("panagiotis_quiz_score", score);
+        localStorage.setItem("panagiotis_quiz_breakdown", JSON.stringify(userAnswers));
+    } catch (e) {}
+
+    finalScoreDisplay.innerHTML = `${score}<span>/${questions.length}</span>`;
+
+    if (score === questions.length) {
+        finalScoreTitle.textContent = "15/15 — 100% Soulmate Perfection! ♡";
+        finalScoreMessage.textContent = `${playerName}, you got every single question right! You remember every detail of our story, our confessions, our kisses, and our little memories. Thank you for being the most loving, wonderful person in the world! Our quiz is now sealed forever. Happy 2nd Anniversary! ♡`;
+    } else if (score >= 11) {
+        finalScoreTitle.textContent = `So Close to Perfection! (${score}/${questions.length}) ♡`;
+        finalScoreMessage.textContent = `${playerName}, you scored ${score} out of 15! You know our relationship so deeply! Every memory we made since August 2024 is written in our hearts. Our quiz is now sealed forever. Happy 2nd anniversary my dearest! ♡`;
+    } else {
+        finalScoreTitle.textContent = `Full of Love Always! (${score}/${questions.length}) ♡`;
+        finalScoreMessage.textContent = `${playerName}, you scored ${score} out of 15! What matters most is every second we spend together and every tomorrow we have ahead. Our quiz is now sealed forever. I love you endlessly! ♡`;
+    }
+
+    createHearts(window.innerWidth / 2, window.innerHeight / 2, 25);
+    await setupShareFeatures(score);
+}
+
+// Setup sharing and tamper-proof verification link for Grace
+async function setupShareFeatures(finalScore) {
+    const total = questions.length;
+    const now = new Date().toISOString();
+    const sig = await computeSignature("Panagiotis", finalScore, total, now);
+
+    // Save to server database /api/score
+    try {
+        fetch("/api/score", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: "Panagiotis",
+                score: finalScore,
+                total: total,
+                timestamp: now,
+                signature: sig,
+                answers: userAnswers
+            })
+        }).catch(() => {});
+    } catch (e) {}
+
+    // Generate signed tamper-proof link
+    const payload = {
+        name: "Panagiotis",
+        score: finalScore,
+        total: total,
+        timestamp: now,
+        sig: sig,
+        answers: userAnswers
+    };
+    const encodedToken = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+    const verifiedUrl = `${window.location.origin}/score.html?v=${encodedToken}`;
+    const shareText = `Panagiotis scored ${finalScore}/${total} on our 2nd Anniversary Relationship Quiz! 💌✨\nVerify official score here: ${verifiedUrl}\n"I love you forever Grace! ♡"`;
+
+    // 1. WhatsApp button
+    const whatsappBtn = document.getElementById("whatsappShareBtn");
+    if (whatsappBtn) {
+        whatsappBtn.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+    }
+
+    // 2. Native Share Sheet
+    const nativeShareBtn = document.getElementById("nativeShareBtn");
+    if (nativeShareBtn) {
+        nativeShareBtn.onclick = async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: "Panagiotis's Verified Anniversary Quiz Score ♡",
+                        text: `Panagiotis scored ${finalScore}/${total} on our 2nd Anniversary Quiz! ♡`,
+                        url: verifiedUrl
+                    });
+                } catch (err) {}
+            } else {
+                copyScoreToClipboard(verifiedUrl);
+            }
+        };
+    }
+
+    // 3. Copy Score Link button
+    const copyScoreBtn = document.getElementById("copyScoreBtn");
+    if (copyScoreBtn) {
+        copyScoreBtn.onclick = () => {
+            copyScoreToClipboard(verifiedUrl);
+        };
+    }
+}
+
+function copyScoreToClipboard(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(showCopyToast);
+    } else {
+        const temp = document.createElement("textarea");
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+        showCopyToast();
+    }
+}
+
+function showCopyToast() {
+    const toast = document.getElementById("copySuccessMsg");
+    const btnText = document.getElementById("copyBtnText");
+    if (toast) {
+        toast.style.display = "block";
+        setTimeout(() => { toast.style.display = "none"; }, 3500);
+    }
+    if (btnText) {
+        btnText.textContent = "✓ Link Copied!";
+        setTimeout(() => { btnText.textContent = "Copy Verified Link"; }, 3000);
+    }
+}
+
+// Check if Panagiotis has already taken the quiz (no retakes)
+function checkAlreadyCompleted() {
+    try {
+        if (localStorage.getItem("quiz_completed_panagiotis") === "true") {
+            const savedScore = parseInt(localStorage.getItem("quiz_score_panagiotis") || "15", 10);
+            try {
+                userAnswers = JSON.parse(localStorage.getItem("panagiotis_quiz_breakdown") || "[]");
+            } catch (e) {}
+
+            nameScreen.style.display = "none";
+            questionScreen.style.display = "none";
+            progressBarWrap.style.display = "none";
+            resultsScreen.style.display = "block";
+
+            finalScoreDisplay.innerHTML = `${savedScore}<span>/15</span>`;
+            finalScoreTitle.textContent = "Quiz Completed & Sealed Forever ♡";
+            finalScoreMessage.textContent = `Panagiotis, you have already taken our 2nd Anniversary relationship quiz! Your score was ${savedScore} out of 15. Every answer and every memory is locked in our hearts forever—there are no retakes because our love is already written! Happy 2nd Anniversary! ♡`;
+
+            setupShareFeatures(savedScore);
+        }
+    } catch (e) {}
+}
+
+checkAlreadyCompleted();
+
+// Floating hearts generator
+function createHearts(x, y, amount) {
+    const symbols = ["♡", "✦", "♥", "✨", "❀"];
+    const colors = ["#b74f67", "#ca5c76", "#8c364b", "#cba26b", "#e5a4b4"];
+
+    for (let i = 0; i < amount; i++) {
+        const heart = document.createElement("div");
+        heart.className = "float-heart";
+        heart.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        heart.style.color = colors[Math.floor(Math.random() * colors.length)];
+        heart.style.left = `${x + Math.random() * 40 - 20}px`;
+        heart.style.top = `${y + Math.random() * 30 - 15}px`;
+        heart.style.setProperty("--x", `${Math.random() * 200 - 100}px`);
+        heart.style.setProperty("--y", `${-100 - Math.random() * 150}px`);
+        heart.style.setProperty("--r", `${Math.random() * 90 - 45}deg`);
+        heart.style.fontSize = `${14 + Math.random() * 18}px`;
+
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 2000);
+    }
+}
+</script>
+
+</body>
+</html>
