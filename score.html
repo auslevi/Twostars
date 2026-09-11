@@ -429,6 +429,19 @@
         </div>
     </div>
 
+    <div class="card" style="margin-top: 18px; padding: 20px 24px; text-align: center;">
+        <div style="font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px;">
+            💌 Have the link Panagiotis sent you?
+        </div>
+        <p style="font-size: 12px; color: var(--ink-soft); margin-bottom: 12px;">
+            If Panagiotis tapped "Share" or "Copy Link" on his device, paste the link or code here to verify immediately:
+        </p>
+        <div style="display: flex; gap: 8px; max-width: 480px; margin: 0 auto;">
+            <input type="text" id="manualCodeInput" placeholder="Paste link (or ?v= code) here..." style="flex: 1; padding: 9px 14px; border: 1px solid var(--border); border-radius: 999px; font-size: 13px; outline: none;">
+            <button type="button" class="btn btn-primary" onclick="verifyManualCode()">Verify</button>
+        </div>
+    </div>
+
     <div class="actions-box">
         <button type="button" class="btn btn-secondary" id="refreshBtn" onclick="checkScoreNow()">
             <span>🔄</span> Refresh Status
@@ -446,6 +459,7 @@
 <script>
 let pollingInterval = null;
 const SECRET_SALT = "grace_panagiotis_love_forever_2026";
+const CLOUD_ENDPOINT = "https://api.restful-api.dev/objects/ff808181a067127101a0922f3ec37c5c";
 
 async function computeSignature(name, score, total, timestamp) {
     const text = `${name}:${score}:${total}:${timestamp}:${SECRET_SALT}`;
@@ -454,6 +468,46 @@ async function computeSignature(name, score, total, timestamp) {
     const hashBuf = await crypto.subtle.digest("SHA-256", data);
     const hashArr = Array.from(new Uint8Array(hashBuf));
     return hashArr.map(b => b.toString(16).padStart(2, "0")).join("").substring(0, 24);
+}
+
+// Manual paste verifier
+async function verifyManualCode() {
+    const input = document.getElementById("manualCodeInput");
+    if (!input || !input.value.trim()) return;
+
+    let val = input.value.trim();
+    let token = val;
+
+    if (val.includes("v=")) {
+        const match = val.match(/[?&]v=([^&#\s]+)/);
+        if (match) token = match[1];
+    } else if (val.includes("verify=")) {
+        const match = val.match(/[?&]verify=([^&#\s]+)/);
+        if (match) token = match[1];
+    }
+
+    try {
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(token))));
+        const { name, score, total, timestamp, sig, answers } = decoded;
+        const expectedSig = await computeSignature(name, score, total, timestamp);
+        if (sig === expectedSig) {
+            renderScoreData({
+                hasScore: true,
+                name,
+                score,
+                total,
+                percentage: Math.round((score / total) * 100),
+                submittedAtFormatted: new Date(timestamp).toLocaleString("en-US", { dateStyle: "full", timeStyle: "short" }),
+                answers: answers || []
+            });
+            document.getElementById("tamperAlert").style.display = "none";
+            if (pollingInterval) clearInterval(pollingInterval);
+        } else {
+            document.getElementById("tamperAlert").style.display = "block";
+        }
+    } catch (e) {
+        alert("Could not read code. Please make sure to copy the full link Panagiotis sent you!");
+    }
 }
 
 // 1. Check if URL contains signed verification token: ?v=...
@@ -490,11 +544,26 @@ async function checkUrlVerification() {
     return false;
 }
 
-// 2. Fetch live score from server API: /api/score
+// 2. Fetch live score from global cloud DB or server API
 async function checkScoreNow() {
     const refreshBtn = document.getElementById("refreshBtn");
     if (refreshBtn) refreshBtn.innerHTML = "<span>⏳</span> Checking...";
 
+    // A. Check Global Cloud Database (always works on any host/phone)
+    try {
+        const cloudRes = await fetch(CLOUD_ENDPOINT);
+        if (cloudRes.ok) {
+            const cloudObj = await cloudRes.json();
+            if (cloudObj && cloudObj.data && cloudObj.data.hasScore) {
+                renderScoreData(cloudObj.data);
+                if (pollingInterval) clearInterval(pollingInterval);
+                if (refreshBtn) refreshBtn.innerHTML = "<span>🔄</span> Refresh Status";
+                return;
+            }
+        }
+    } catch (e) {}
+
+    // B. Check Local Server API: /api/score
     try {
         const res = await fetch("/api/score");
         if (res.ok) {
@@ -502,16 +571,13 @@ async function checkScoreNow() {
             if (data.hasScore) {
                 renderScoreData(data);
                 if (pollingInterval) clearInterval(pollingInterval);
+                if (refreshBtn) refreshBtn.innerHTML = "<span>🔄</span> Refresh Status";
                 return;
             }
         }
-    } catch (e) {
-        console.log("Server score check note:", e.message);
-    } finally {
-        if (refreshBtn) refreshBtn.innerHTML = "<span>🔄</span> Refresh Status";
-    }
+    } catch (e) {}
 
-    // Also check localStorage as backup if tested on same device
+    // C. Check localStorage as backup if tested on same device
     try {
         const localTaken = localStorage.getItem("panagiotis_quiz_taken");
         const localScore = localStorage.getItem("panagiotis_quiz_score");
@@ -530,6 +596,8 @@ async function checkScoreNow() {
             if (pollingInterval) clearInterval(pollingInterval);
         }
     } catch (e) {}
+
+    if (refreshBtn) refreshBtn.innerHTML = "<span>🔄</span> Refresh Status";
 }
 
 function renderScoreData(data) {
