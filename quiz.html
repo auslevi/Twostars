@@ -690,6 +690,9 @@ body {
                 <button type="button" class="btn-share-sub" id="copyScoreBtn">
                     <span>📋</span> <span id="copyBtnText">Copy Verified Link</span>
                 </button>
+                <button type="button" class="btn-share-sub" id="cloudSyncBtn" style="border-color: #b74f67; color: #b74f67;">
+                    <span>☁️</span> <span id="cloudSyncText">Push to Grace's Portal</span>
+                </button>
                 <a href="score.html" class="btn-share-sub" target="_blank" rel="noopener noreferrer">
                     <span>🛡️</span> Grace's Live Score Portal ↗
                 </a>
@@ -1155,6 +1158,25 @@ async function setupShareFeatures(finalScore) {
     if (copyScoreBtn) {
         copyScoreBtn.onclick = () => {
             copyScoreToClipboard(verifiedUrl);
+        };
+    }
+
+    // 4. Cloud Sync button
+    const cloudSyncBtn = document.getElementById("cloudSyncBtn");
+    const cloudSyncText = document.getElementById("cloudSyncText");
+    if (cloudSyncBtn) {
+        cloudSyncBtn.onclick = async () => {
+            if (cloudSyncText) cloudSyncText.textContent = "Syncing...";
+            try {
+                await fetch("https://api.restful-api.dev/objects/ff808181a067127101a0922f3ec37c5c", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(cloudPayload)
+                });
+                if (cloudSyncText) cloudSyncText.textContent = "✓ Synced to Grace!";
+            } catch (e) {
+                if (cloudSyncText) cloudSyncText.textContent = "Sync error";
+            }
         };
     }
 }
