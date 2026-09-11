@@ -577,26 +577,6 @@ async function checkScoreNow() {
         }
     } catch (e) {}
 
-    // C. Check localStorage as backup if tested on same device
-    try {
-        const localTaken = localStorage.getItem("panagiotis_quiz_taken");
-        const localScore = localStorage.getItem("panagiotis_quiz_score");
-        const localAnswers = localStorage.getItem("panagiotis_quiz_breakdown");
-
-        if (localTaken === "true" && localScore !== null) {
-            renderScoreData({
-                hasScore: true,
-                name: "Panagiotis",
-                score: parseInt(localScore, 10) || 0,
-                total: 15,
-                percentage: Math.round(((parseInt(localScore, 10) || 0) / 15) * 100),
-                submittedAtFormatted: "Recorded on this device ♡",
-                answers: localAnswers ? JSON.parse(localAnswers) : []
-            });
-            if (pollingInterval) clearInterval(pollingInterval);
-        }
-    } catch (e) {}
-
     if (refreshBtn) refreshBtn.innerHTML = "<span>🔄</span> Refresh Status";
 }
 
