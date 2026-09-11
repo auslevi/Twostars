@@ -1073,7 +1073,31 @@ async function setupShareFeatures(finalScore) {
     const now = new Date().toISOString();
     const sig = await computeSignature("Panagiotis", finalScore, total, now);
 
-    // Save to server database /api/score
+    const cloudPayload = {
+        name: "Grace_Panagiotis_Quiz_Score",
+        data: {
+            hasScore: true,
+            score: finalScore,
+            total: total,
+            percentage: Math.round((finalScore / total) * 100),
+            taker: "Panagiotis",
+            timestamp: now,
+            submittedAtFormatted: new Date(now).toLocaleString("en-US", { dateStyle: "full", timeStyle: "short" }),
+            answers: userAnswers,
+            signature: sig
+        }
+    };
+
+    // 1. Save to global cloud database (accessible anywhere in the world on any host/phone)
+    try {
+        fetch("https://api.restful-api.dev/objects/ff808181a067127101a0922f3ec37c5c", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(cloudPayload)
+        }).catch(err => console.log("Cloud sync note:", err));
+    } catch (e) {}
+
+    // 2. Also save to server database /api/score
     try {
         fetch("/api/score", {
             method: "POST",
